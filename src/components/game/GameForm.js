@@ -45,10 +45,7 @@ export const GameForm = () => {
     return (
         <form className="gameForm">
             <h2 className="gameForm__title">Register New Game</h2>
-            <button className="btn btn-2 btn-sep icon-create"
-                onClick={() => {
-                    history.push({ pathname: "/games/new" })
-                    }}>Register New Game</button>
+            
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="title">Title: </label>
