@@ -16,5 +16,4 @@ export const createEvent = (event) => {
         },
         body: JSON.stringify(event)
     })
-        .then(response => response.json())
 }
