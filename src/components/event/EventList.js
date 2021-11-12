@@ -32,6 +32,11 @@ export const EventList = () => {
                         <div>
                             {event.date} @ {event.time}
                         </div>
+                        <button className="btn btn-2 btn-sep icon-create" 
+                            onClick={() => {
+                                history.push({ pathname: `event/edit/${event.id}`})
+                                }}>Edit Event
+                        </button>
                         {
                             event.joined
                                 ? <button className="btn btn-3"

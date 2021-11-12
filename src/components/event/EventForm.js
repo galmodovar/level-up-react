@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { getGames } from "../game/GameManager"
-import { createEvent } from "./EventManager"
+import { createEvent, getEventById, updateEvent } from "./EventManager"
 
 
 export const EventForm = () => {
     const history = useHistory()
     const [ games, setGames ] = useState([])
-
+    const { eventId } = useParams()
+  
     const [currentEvent, setEvent] = useState({})
+
+    useEffect(() => {
+        if (eventId) {
+            getEventById(eventId)
+             .then(data => setEvent({
+                 ...data,
+                 gameId: data.id,
+                 description: data.description,
+                 date: data.date,
+                 time: data.time,
+             }))
+        }
+
+    }, [eventId])
 
     useEffect(() => {
         getGames().then(data => setGames(data))
@@ -26,9 +41,9 @@ export const EventForm = () => {
             <h2 className="gameForm__title">Schedule New Event</h2>
             <fieldset>
                 <div className="form-group">
-                    <label htmlFor="gameId">Game: </label>
-                    <select name="gameId" className="form-control"
-                        value={ currentEvent.gameId }
+                    <label htmlFor="eventId">Game: </label>
+                    <select name="eventId" className="form-control"
+                        value={ currentEvent.eventId }
                         onChange={ changeEventState }>
                         <option value="0">Select a game...</option>
                         {
@@ -72,16 +87,22 @@ export const EventForm = () => {
                     evt.preventDefault()
 
                     const event = {
-                        game: parseInt(currentEvent.gameId),
+                        gameId: parseInt(currentEvent.eventId),
                         description: currentEvent.description,
                         date: currentEvent.date,
                         time: currentEvent.time,
+                        id: eventId
                         
                     }
 
                     // Send POST request to your API
-                    createEvent(event)
+                    if (eventId) {
+                        updateEvent(event)
                         .then(() => history.push("/events"))
+                    } else {
+                        createEvent(event)
+                        .then(() => history.push("/events"))
+                    }
 
                     // TODO: Call the createEvent function and pass it the event object
 

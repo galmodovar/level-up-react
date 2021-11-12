@@ -26,15 +26,18 @@ export const Profile = () => {
                 {/* TODO: show the user's username */}
                 <div className="profile__username">Username: {profile?.gamer?.user?.username} </div>
                 {/* TODO: show the user's bio */}
-                <div className="profile__bio">About you: {profile?.gamer?.user?.bio} </div>
+                <div className="profile__bio">About you: {profile?.gamer?.bio} </div>
             </section>
             <section className="profile__registrations">
                 <header className="registrations__header">
                     <h3>Events you are attending</h3>
                 </header>
                 <div className="registrations">
-                    {/* TODO: Map through the events the user is attending */}
-                    
+                    {
+                        profile.attending?.map(event => {
+                            return <h3>{event.game.title}</h3>
+                        })
+                    }
                 </div>
             </section>
             <section className="profile__registrations">
@@ -42,7 +45,11 @@ export const Profile = () => {
                     <h3>Events you are hosting</h3>
                 </header>
                 <div className="registrations">
-                    {/* TODO: Map through the events the user is hosting */}
+                {
+                        profile.hosting?.map(event => {
+                            return <h3>{event.game.title}</h3>
+                        })
+                    }
                 </div>
             </section>
         </article>

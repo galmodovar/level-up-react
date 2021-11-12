@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from "react"
-import { useHistory } from 'react-router-dom'
-import { createGame, getGameTypes } from './GameManager.js'
+import { useHistory, useParams } from 'react-router-dom'
+import { createGame, getGameTypes, updateGame, getGameById } from './GameManager.js'
 
 
 export const GameForm = () => {
     const history = useHistory()
     const [gameTypes, setGameTypes] = useState([])
+    const [currentGame, setCurrentGame] = useState({})
+    const {gameId} = useParams()
 
     /*
         Since the input fields are bound to the values of
         the properties of this state variable, you need to
         provide some default values.
     */
-    const [currentGame, setCurrentGame] = useState({
-        skillLevel: 1,
-        numberOfPlayers: 0,
-        title: "",
-        maker: "",
-        gameTypeId: 0
-    })
+   useEffect(() => {
+       if (gameId) {
+           getGameById(gameId)
+            .then(data => setCurrentGame({
+                ...data,
+                skillLevel: data.skill_level,
+                numberOfPlayers: data.num_of_players,
+                gameTypeId: data.game_type.id
+            }))
+       } else {
+           setCurrentGame({
+               skillLevel: 1,
+               numberOfPlayers: 0,
+               title: "",
+               maker: "",
+               gameTypeId: 0
+           })
+       }
+   }, [gameId])
+   
 
     useEffect(() => {
         getGameTypes().then(data => setGameTypes(data))
@@ -43,6 +58,7 @@ export const GameForm = () => {
     /* REFACTOR CHALLENGE END */
 
     return (
+        
         <form className="gameForm">
             <h2 className="gameForm__title">Register New Game</h2>
             
@@ -102,14 +118,20 @@ export const GameForm = () => {
                         title: currentGame.title,
                         numberOfPlayers: parseInt(currentGame.numberOfPlayers),
                         skillLevel: parseInt(currentGame.skillLevel),
-                        gameTypeId: parseInt(currentGame.gameTypeId)
+                        gameTypeId: parseInt(currentGame.gameTypeId),
+                        id: gameId
                     }
 
                     // Send POST request to your API
-                    createGame(game)
+                    if (gameId) {
+                        updateGame(game)
+                        .then(()=> history.push("/games"))
+                    } else {
+                        createGame(game)
                         .then(() => history.push("/games"))
+                    }
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-2 btn-sep icon-create">Save</button>
         </form>
     )
 }
